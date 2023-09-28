@@ -3,7 +3,7 @@ import { Filter, ObjectId } from "mongodb";
 import { Router, getExpressRouter } from "./framework/router";
 
 import { Post, User, WebSession } from "./app";
-import { PostDoc } from "./concepts/post";
+import { PostAuthorNotMatchError, PostDoc } from "./concepts/post";
 import { UserDoc } from "./concepts/user";
 import { WebSessionDoc } from "./concepts/websession";
 
@@ -60,11 +60,35 @@ class Routes {
     return await Post.create(user, content);
   }
 
+  @Router.post("/posts/:_id")
+  async updatePost(session: WebSessionDoc, _id: ObjectId, update: string) {
+    const user = WebSession.getUser(session);
+    const post = (await Post.read({ _id }))[0];
+    if (post.author === user) {
+      return await Post.update(_id, `{"content": "${update}"}`);
+    } else {
+      throw PostAuthorNotMatchError;
+    }
+  }
+
+  @Router.delete("/posts")
+  async deletePosts(session: WebSessionDoc) {
+    const user = WebSession.getUser(session);
+    const posts = await Post.read({ author: user });
+    return await Promise.all(posts.map((post) => Post.delete(post._id)));
+  }
+
   @Router.delete("/posts/:_id")
   async deletePost(session: WebSessionDoc, _id: ObjectId) {
     // TODO 3: Delete the post with given _id
     // Make sure the user deleting is the author of the post
-    throw new Error("Not implemented!");
+    const user = WebSession.getUser(session);
+    const post = (await Post.read({ _id }))[0];
+    if (post.author === user) {
+      return await Post.delete(_id);
+    } else {
+      throw PostAuthorNotMatchError;
+    }
   }
 }
 

@@ -27,6 +27,11 @@ export default class PostConcept {
     await this.posts.deleteOne({ _id });
     return { msg: "Post deleted successfully!" };
   }
+
+  async update(_id: ObjectId, update: string) {
+    await this.posts.updateOne({ _id }, { content: update });
+    return { msg: "Post updated successfully!" };
+  }
 }
 
 export class PostAuthorNotMatchError extends NotAllowedError {

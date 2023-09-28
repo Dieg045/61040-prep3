@@ -24,6 +24,10 @@ main {
   gap: 1em;
 }
 
+ul {
+  background: linear-gradient(#C3B1E1, #00FFFF);
+}
+
 #operations, #response {
   width: 45%;
   height: 70vh;

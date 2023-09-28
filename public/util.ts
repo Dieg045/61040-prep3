@@ -48,10 +48,22 @@ const operations = [
     fields: { content: "textarea" },
   },
   {
+    name: "Update Post",
+    endpoint: "/api/posts/:id",
+    method: "PATCH",
+    fields: { id: "input", update: "textarea" },
+  },
+  {
     name: "Delete Post",
     endpoint: "/api/posts/:id",
     method: "DELETE",
     fields: { id: "input" },
+  },
+  {
+    name: "Delete All Posts",
+    endpoint: "/api/posts/",
+    method: "DELETE",
+    fields: {},
   },
 ];
 
